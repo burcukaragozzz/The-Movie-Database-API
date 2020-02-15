@@ -5,12 +5,15 @@ import {
   GET_RESULTS_REQUESTED,
   GET_RESULTS_SUCCEEDED,
   GET_RESULTS_FAILED,
+  GET_PAGE_NUMBER_DECREMENT,
+  GET_PAGE_NUMBER_INCREMENT,
 } from './constants';
 
 export const initialState = fromJS({
   status: Status.INIT,
   reason: null,
   movies: [],
+  page: 1
 });
 
 function appReducer(state = initialState, action) {
@@ -25,6 +28,12 @@ function appReducer(state = initialState, action) {
       return state
       .set('reason', action.reason)
       .set('status', Status.FAILED)
+    case GET_PAGE_NUMBER_INCREMENT:
+      return state
+      .set('page', state.toJS().page + 1)
+    case GET_PAGE_NUMBER_DECREMENT:
+      return state
+      .set('page', state.toJS().page - 1)
     default:
       return state;
   }
