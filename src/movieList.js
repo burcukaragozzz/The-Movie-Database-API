@@ -1,19 +1,16 @@
 import React from 'react';
-import './App.css';
-import Movie from './movie';
-import RightArrow from './images/right-arrow.png';
-import LeftArrow from './images/left-arrow.png';
-
-
 import { connect } from 'react-redux';
+import './App.css';
 
 import {
   getResultsSucceeded, 
-  getResultsFailed, 
-  getResultsRequested,
   getPageNumberIncrement,
   getPageNumberDecrement,
 } from './actions';
+
+import Movie from './movie';
+import RightArrow from './images/right-arrow.png';
+import LeftArrow from './images/left-arrow.png';
 
 class MovieList extends React.Component {
 
@@ -21,12 +18,14 @@ class MovieList extends React.Component {
     this.setCurrentPage();
   }
 
-  componentDidUpdate = () => {
-    this.setCurrentPage();
-  }
+  UNSAFE_componentWillReceiveProps = nextProps => {
+    if (nextProps.page !== this.props.page) {
+      this.setCurrentPage();
+    }
+  };
 
   setCurrentPage = () => {
-    fetch('http://api.themoviedb.org/3/movie/top_rated?api_key=4719970efb7c7d95db53e03b34fdc3b3&'+`page=${this.props.page}`)
+    fetch(`http://api.themoviedb.org/3/movie/top_rated?api_key=4719970efb7c7d95db53e03b34fdc3b3&page=${this.props.page}`)
     .then(response => response.json())
     .then(responseData => {
       this.props.getResultsSucceeded(responseData);
@@ -40,7 +39,7 @@ class MovieList extends React.Component {
     const { movies } = this.props;
     let movieList;
     if(movies){
-      movieList = movies.map((movie, index) => <Movie title={movie.title} key={index} />);
+      movieList = movies.map((movie, index) => <Movie title={movie.title} posterPath={movie.poster_path} key={index} />);
     }
 
     return (
@@ -68,9 +67,6 @@ const mapState = state => {
   let stateObj = state.toJS();
   return { movies: stateObj.movies, page: stateObj.page }
 } 
-
-
-
 
 const mapDispatchToProps = dispatch => ({
   getResultsSucceeded: results => {

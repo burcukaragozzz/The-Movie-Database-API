@@ -7,13 +7,19 @@ import {
   GET_RESULTS_FAILED,
   GET_PAGE_NUMBER_DECREMENT,
   GET_PAGE_NUMBER_INCREMENT,
+  GET_SEARCH_TEXT,
+  GET_SEARCH_DATE,
+  GET_SEARCH_VOTE,
 } from './constants';
 
 export const initialState = fromJS({
   status: Status.INIT,
   reason: null,
   movies: [],
-  page: 1
+  page: 1,
+  searchText: 'all',
+  date: '',
+  vote: 0,
 });
 
 function appReducer(state = initialState, action) {
@@ -32,8 +38,20 @@ function appReducer(state = initialState, action) {
       return state
       .set('page', state.toJS().page + 1)
     case GET_PAGE_NUMBER_DECREMENT:
+      if (state.toJS().page > 1) {
+        return state
+        .set('page', state.toJS().page - 1)
+      }
+    case GET_SEARCH_TEXT:
       return state
-      .set('page', state.toJS().page - 1)
+      
+      .set('searchText', action.value)
+    case GET_SEARCH_DATE:
+      return state
+      .set('date', action.value)
+    case GET_SEARCH_VOTE:
+        return state
+      .set('vote', action.value)
     default:
       return state;
   }
